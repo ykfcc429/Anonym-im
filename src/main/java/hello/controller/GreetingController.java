@@ -1,5 +1,7 @@
-package hello;
+package hello.controller;
 
+import hello.DO.Greeting;
+import hello.DO.HelloMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
