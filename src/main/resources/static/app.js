@@ -37,6 +37,9 @@ function sendName() {
 }
 
 function showGreeting(message) {
+    if(message.indexOf("send")>-1){
+        return;
+        }
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
 }
 
