@@ -24,7 +24,7 @@ public class GreetingController {
     public Greeting messageHandle(@Valid HelloMessage message) throws Exception {
         if(message==null || message.getRoomNum()==null || message.getRoomNum().isEmpty()) {
             log.error("request message error , message is {}", message);
-            return new Greeting("房间号为空");
+            return new Greeting("房间号为空!");
         }
         try {
             simpMessageSendingOperations.convertAndSend("/topic/"+message.getRoomNum(),new Greeting(message.getName()));
