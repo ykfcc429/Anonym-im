@@ -8,7 +8,10 @@ public class Greeting {
 
     private String content;
 
-    public Greeting(String content) {
+    private String sender;
+
+    public Greeting(String content,String sender) {
         this.content = content;
+        this.sender = sender;
     }
 }

@@ -2,6 +2,7 @@ package hello.controller;
 
 import hello.DO.Greeting;
 import hello.DO.HelloMessage;
+import hello.DO.Result;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.MessagingException;
@@ -17,18 +18,18 @@ public class GreetingController {
     private final SimpMessagingTemplate simpMessageSendingOperations;
 
     @MessageMapping("/send")
-    public Greeting messageHandle(HelloMessage message) throws Exception {
+    public Result<?> messageHandle(HelloMessage message) {
         if(message==null || message.getRoomNum()==null) {
             log.error("request message error , message is {}", message);
-            return new Greeting("send error roomNum is null!");
+            return Result.error("error",null);
         }
         try {
-            simpMessageSendingOperations.convertAndSend("/topic/"+message.getRoomNum(),new Greeting(message.getName()));
+            simpMessageSendingOperations.convertAndSend("/topic/"+message.getRoomNum(),new Greeting(message.getMessage(),message.getName()));
         }catch (MessagingException messagingException){
             log.error("send Message failed , failedMessage is {}",messagingException.getFailedMessage(),messagingException);
-            return new Greeting("send failed");
+            return Result.error("send failed",null);
         }
-        return new Greeting("send success");
+        return Result.success("ok",null);
     }
 
 }
