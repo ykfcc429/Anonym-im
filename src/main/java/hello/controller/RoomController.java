@@ -16,7 +16,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,18 +32,9 @@ public class RoomController {
     private final RedisTemplate<String,String> redisTemplate;
 
     @PostMapping("/list")
-    public Result<List<Room>> roomList(@Valid @NotNull int pageNo,@NotNull int pageSize) throws IOException {
+    public Result<List<String>> roomList(@Valid @NotNull int pageNo,@NotNull int pageSize) throws IOException {
         List<String> room = redisTemplate.opsForList().range("room", (long) (pageNo - 1) * pageSize, (long) pageNo * pageSize);
-        List<Room> list = null;
-        if(room!=null) {
-             list = new ArrayList<>(room.size());
-             ObjectMapper objectMapper = new ObjectMapper();
-            for (String s : room) {
-                Room room1 = objectMapper.readValue(s,Room.class);
-                list.add(room1);
-            }
-        }
-        return Result.success("ok",list);
+        return Result.success("ok",room);
     }
 
     @PostMapping("/newRoom")
@@ -61,19 +51,20 @@ public class RoomController {
 
     @PostMapping("/delRoom")
     public Result<?> delRoom(@Valid @NotNull Long roomNum) throws IOException {
-        Result<List<Room>> result = roomList(0, -1);
-        List<Room> data = result.getData();
+        Result<List<String>> result = roomList(0, -1);
+        List<String> data = result.getData();
         if(data!=null){
+            ObjectMapper objectMapper = new ObjectMapper();
             for (int i = 0; i < data.size(); i++) {
-                if(data.get(i).getNum().equals(roomNum)) {
+                Room room = objectMapper.readValue(data.get(i),Room.class);
+                if(room.getNum().equals(roomNum)) {
                     data.remove(data.get(i));
                     break;
                 }
             }
             redisTemplate.delete("room");
-            ObjectMapper objectMapper = new ObjectMapper();
-            for (Room datum : data) {
-                redisTemplate.opsForList().leftPush("room",objectMapper.writeValueAsString(datum));
+            for (String datum : data) {
+                redisTemplate.opsForList().leftPush("room",datum);
             }
         }
         return Result.success("ok",null);
