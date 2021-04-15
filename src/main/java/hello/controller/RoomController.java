@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,5 +82,12 @@ public class RoomController {
             }
         }
         return Result.success("deleted "+ deleted +" pieces of data",null);
+    }
+
+    @GetMapping("/randomName")
+    public Result<?> setToRedis(){
+        String adj = redisTemplate.opsForSet().randomMember("adj");
+        String noun = redisTemplate.opsForSet().randomMember("noun");
+        return Result.success(adj+"的"+noun,null);
     }
 }
