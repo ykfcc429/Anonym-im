@@ -65,7 +65,6 @@ public class RoomController {
         List<Room> data = result.getData();
         int deleted = 0;
         if(data!=null && !data.isEmpty()){
-            int size = data.size();
             for (int i = 0; i < data.size(); i++) {
                 if(data.get(i).getNum().equals(roomNum)) {
                     data.remove(data.get(i));
