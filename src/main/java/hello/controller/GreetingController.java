@@ -16,9 +16,9 @@ public class GreetingController {
 
     private final SimpMessagingTemplate simpMessageSendingOperations;
 
-    @MessageMapping("/hello")
+    @MessageMapping("/send")
     public Greeting messageHandle(HelloMessage message) throws Exception {
-        if(message==null || message.getRoomNum()==null || message.getRoomNum().isEmpty()) {
+        if(message==null || message.getRoomNum()==null) {
             log.error("request message error , message is {}", message);
             return new Greeting("send error roomNum is null!");
         }

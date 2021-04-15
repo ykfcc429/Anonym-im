@@ -2,26 +2,20 @@ package hello.DO;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Data
 public class HelloMessage {
 
     /**
      * 消息内容
      */
-    @NotNull
     private String name;
 
     /**
      * 房间号
      */
-    @NotBlank
-    private String roomNum;
+    private Long roomNum;
 
-
-    public HelloMessage(String name, String roomNum) {
+    public HelloMessage(String name, Long roomNum) {
         this.name = name;
         this.roomNum = roomNum;
     }
