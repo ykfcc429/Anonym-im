@@ -85,7 +85,7 @@ public class RoomController {
     }
 
     @GetMapping("/randomName")
-    public Result<?> setToRedis(){
+    public Result<?> randomName(){
         String adj = redisTemplate.opsForSet().randomMember("adj");
         String noun = redisTemplate.opsForSet().randomMember("noun");
         return Result.success(adj+"的"+noun,null);
