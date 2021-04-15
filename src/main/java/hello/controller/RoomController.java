@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,9 +33,18 @@ public class RoomController {
     private final RedisTemplate<String,String> redisTemplate;
 
     @PostMapping("/list")
-    public Result<List<String>> roomList(@Valid @NotNull int pageNo,@NotNull int pageSize) throws IOException {
+    public Result<List<Room>> roomList(@Valid @NotNull Integer pageNo,@NotNull Integer pageSize) throws IOException {
         List<String> room = redisTemplate.opsForList().range("room", (long) (pageNo - 1) * pageSize, (long) pageNo * pageSize);
-        return Result.success("ok",room);
+        List<Room> list = null;
+        if(room!=null) {
+            list = new ArrayList<>(room.size());
+            ObjectMapper objectMapper = new ObjectMapper();
+            for (String s : room) {
+                Room room1 = objectMapper.readValue(s,Room.class);
+                list.add(room1);
+            }
+        }
+        return Result.success("ok",list);
     }
 
     @PostMapping("/newRoom")
@@ -45,28 +55,32 @@ public class RoomController {
         room.setNum(roomNum);
         ObjectMapper objectMapper = new ObjectMapper();
         String s = objectMapper.writeValueAsString(room);
-        redisTemplate.opsForList().leftPush("room",s);
+        redisTemplate.opsForList().rightPush("room",s);
         return Result.success("ok",room);
     }
 
     @PostMapping("/delRoom")
     public Result<?> delRoom(@Valid @NotNull Long roomNum) throws IOException {
-        Result<List<String>> result = roomList(0, -1);
-        List<String> data = result.getData();
-        if(data!=null){
-            ObjectMapper objectMapper = new ObjectMapper();
+        Result<List<Room>> result = roomList(1, Integer.MAX_VALUE);
+        List<Room> data = result.getData();
+        int deleted = 0;
+        if(data!=null && !data.isEmpty()){
+            int size = data.size();
             for (int i = 0; i < data.size(); i++) {
-                Room room = objectMapper.readValue(data.get(i),Room.class);
-                if(room.getNum().equals(roomNum)) {
+                if(data.get(i).getNum().equals(roomNum)) {
                     data.remove(data.get(i));
+                    deleted++;
                     break;
                 }
             }
-            redisTemplate.delete("room");
-            for (String datum : data) {
-                redisTemplate.opsForList().leftPush("room",datum);
+            if(deleted>0) {
+                redisTemplate.delete("room");
+                ObjectMapper objectMapper = new ObjectMapper();
+                for (Room datum : data) {
+                    redisTemplate.opsForList().rightPush("room", objectMapper.writeValueAsString(datum));
+                }
             }
         }
-        return Result.success("ok",null);
+        return Result.success("deleted "+ deleted +" pieces of data",null);
     }
 }
