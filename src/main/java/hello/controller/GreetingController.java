@@ -21,13 +21,13 @@ public class GreetingController {
     public Result<?> messageHandle(HelloMessage message) {
         if(message==null || message.getRoomNum()==null) {
             log.error("request message error , message is {}", message);
-            return Result.error("error",null);
+            return Result.error(4003,"消息为null或房间号为空");
         }
         try {
             simpMessageSendingOperations.convertAndSend("/topic/"+message.getRoomNum(),new Greeting(message.getMessage(),message.getName()));
         }catch (MessagingException messagingException){
             log.error("send Message failed , failedMessage is {}",messagingException.getFailedMessage(),messagingException);
-            return Result.error("send failed",null);
+            return Result.error(5002,"消息发送异常");
         }
         return Result.success("ok",null);
     }

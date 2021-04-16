@@ -34,7 +34,7 @@ public class Result<F> {
         return new Result<>(233,message,f);
     }
 
-    public static <F> Result<F> error(String message,F f){
-        return new Result<>(5001,message,f);
+    public static <F> Result<F> error(int code,String message){
+        return new Result<>(code,message,null);
     }
 }

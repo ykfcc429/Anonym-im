@@ -8,10 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -34,7 +31,8 @@ public class RoomController {
     private final RedisTemplate<String,String> redisTemplate;
 
     @PostMapping("/list")
-    public Result<List<Room>> roomList(@Valid @NotNull Integer pageNo,@NotNull Integer pageSize) throws IOException {
+    public Result<List<Room>> roomList(@NotNull @RequestParam("pageNo") int pageNo,
+                                       @NotNull @RequestParam("pageSize") int pageSize) throws IOException {
         List<String> room = redisTemplate.opsForList().range("room", (long) (pageNo - 1) * pageSize, (long) pageNo * pageSize);
         List<Room> list = null;
         if(room!=null) {
@@ -49,7 +47,7 @@ public class RoomController {
     }
 
     @PostMapping("/newRoom")
-    public Result<?> newRoom(@Valid @NotBlank String roomName) throws JsonProcessingException {
+    public Result<?> newRoom(@Valid @NotBlank @RequestParam String roomName) throws JsonProcessingException {
         Long roomNum = redisTemplate.opsForValue().increment("roomNum");
         Room room = new Room();
         room.setName(roomName);
@@ -61,7 +59,7 @@ public class RoomController {
     }
 
     @PostMapping("/delRoom")
-    public Result<?> delRoom(@Valid @NotNull Long roomNum) throws IOException {
+    public Result<?> delRoom(@Valid @NotNull @RequestParam Long roomNum) throws IOException {
         Result<List<Room>> result = roomList(1, Integer.MAX_VALUE);
         List<Room> data = result.getData();
         int deleted = 0;
