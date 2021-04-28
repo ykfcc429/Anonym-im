@@ -26,7 +26,7 @@ public class GreetingController {
         try {
             simpMessageSendingOperations.convertAndSend("/topic/"+message.getRoomNum(),new Greeting(message.getMessage(),message.getName()));
         }catch (MessagingException messagingException){
-            log.error("send Message failed , failedMessage is {}",messagingException.getFailedMessage(),messagingException);
+            log.error("send Message failed , The Message is {}",messagingException.getFailedMessage(),messagingException);
             return Result.error(5002,"消息发送异常");
         }
         return Result.success("ok",null);
