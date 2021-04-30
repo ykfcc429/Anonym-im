@@ -18,9 +18,9 @@ public class HelloMessage {
     /**
      * 房间号
      */
-    private Long roomNum;
+    private String roomNum;
 
-    public HelloMessage(String name, String message, Long roomNum) {
+    public HelloMessage(String name, String message, String roomNum) {
         this.name = name;
         this.message = message;
         this.roomNum = roomNum;
