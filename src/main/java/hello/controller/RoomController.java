@@ -9,7 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -90,11 +93,4 @@ public class RoomController {
         return Result.success("deleted "+ deleted +" pieces of data",null);
     }
 
-    @GetMapping("/randomName")
-    @ApiOperation(value = "获取一个随机的昵称", notes = "获取一个随机的昵称")
-    public Result<?> randomName(){
-        String adj = redisTemplate.opsForSet().randomMember("adj");
-        String noun = redisTemplate.opsForSet().randomMember("noun");
-        return Result.success(adj+"的"+noun,null);
-    }
 }
