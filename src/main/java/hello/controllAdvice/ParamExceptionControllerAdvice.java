@@ -43,12 +43,12 @@ public class ParamExceptionControllerAdvice {
             if (!errors.isEmpty()) {
                 // 这里列出了全部错误参数，按正常逻辑，只需要第一条错误即可
                 FieldError fieldError = (FieldError) errors.get(0);
-                return Result.error(4001,
+                return Result.error(4002,
                         fieldError.getField() + " " +
                                 fieldError.getDefaultMessage());
             }
         }
-        return Result.error(4001,"参数校验异常处理!");
+        return Result.error(4002,"参数校验异常处理!");
     }
 
     /**
