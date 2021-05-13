@@ -36,9 +36,7 @@ public class BloomFilter {
     }
 
     public void create(String topic){
-        int n = -1 >>> Integer.numberOfLeadingZeros((1 << 16) - 1);
-        int size =  (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
-        map.put(topic,size);
+        this.create(topic,1 << 16);
     }
 
     public void put(String topic, String key)throws NoSuchElementException{
