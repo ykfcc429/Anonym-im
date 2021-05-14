@@ -19,6 +19,8 @@ public class BloomFilter {
 
     final int MAXIMUM_CAPACITY = 1 << 30;
 
+    final int DEFAULT_INIT_SIZE = 1 << 16;
+
     private Map<String ,Integer> map = new HashMap<>();
 
     private final RedisTemplate<String,String> redisTemplate;
@@ -36,7 +38,7 @@ public class BloomFilter {
     }
 
     public void create(String topic){
-        this.create(topic,1 << 16);
+        this.create(topic,DEFAULT_INIT_SIZE);
     }
 
     public void put(String topic, String key)throws NoSuchElementException{
@@ -47,8 +49,8 @@ public class BloomFilter {
     private int getOffset(String topic, String key)throws NoSuchElementException{
         contains(topic);
         Integer integer = map.get(topic);
-        int hash;
-        hash = (hash = key.hashCode())^ (hash >>> 16);
+        int hash = key.hashCode();
+        hash ^= (hash >>> 16);
         return hash & (integer-1);
     }
 
