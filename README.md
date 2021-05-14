@@ -1,5 +1,7 @@
 # Anonym-im
 
+演示地址 <http:\1.117.73.217:8080>
+
 * 请准备redis.
 
 * 项目启动后访问 <localhost:8080> 点击connect可连接至服务器
