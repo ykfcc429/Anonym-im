@@ -58,11 +58,9 @@ public class RandomNameInit implements ApplicationRunner {
             for (String noun : nouns.split(","))
                 redisTemplate.opsForSet().add("noun", noun);
         }
-        if(redisTemplate.hasKey("name") == null || !redisTemplate.hasKey("name")) {
-            bloomFilter.create("name");
-            for (String s : nouns.split(",")) {
-                bloomFilter.put("name", s);
-            }
+        bloomFilter.create("name");
+        for (String s : nouns.split(",")) {
+            bloomFilter.put("name", s);
         }
     }
 }
